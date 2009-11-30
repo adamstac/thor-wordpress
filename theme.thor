@@ -1,31 +1,32 @@
 class Theme < Thor
   
-  # SSH user information
-  SSH_USER = "user@domain.com"
-  
-  # Remote file location that rsync will deploy to
-  REMOTE_ROOT = "~/path/to/remote/root/"
-  
-  desc "deploy", "Deploys the theme"
-  def deploy
-    puts "*** Deploying the site ***"
-    system "rsync -avz --delete . #{SSH_USER}:#{REMOTE_ROOT}"
-  end
-  
-  desc "styles_clear", "Clears the themes styles"
-  def styles_clear
-    puts "*** Clearing styles ***"
-    system "rm -Rfv css/*"
+  desc "install --theme=<theme>", "Unpacks the specified <theme> from the compass-wordpress gem"
+  method_options :directory => :string, :theme => :string
+  def install
+    opts = {'directory' => '.', 'theme' => 'thematic'}
+    opts = opts.merge(options)
+
+    puts "*** Installing Child Theme ***"
+    cmd = "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['theme']} #{opts['directory']}"
+    system cmd
   end
 
-  desc "styles_generate --clear", "Generates the themes styles."
-  method_options :clear => :bolean
-  def styles_generate
-    if options.clear?
-      invoke :styles_clear
-    end
+  desc "generate", "Clears and Generates the styles"
+  def generate
+    invoke :clear
     puts "*** Generating styles ***"
     system "compass"
+  end
+
+  desc "watch", "Runs compass --watch"
+  def watch
+    system "compass --watch"
+  end
+
+  desc "clear", "Clears the styles"
+  def clear
+    puts "*** Clearing styles ***"
+    system "rm -Rfv css/*"
   end
 
 end

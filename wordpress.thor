@@ -13,8 +13,7 @@ class Wordpress < Thor
       cmd +=  " | tar -zxv "
       cmd +=  " -C #{opts['directory']} " unless opts['directory'] == '.'
       cmd +=  " --strip 1"
-      system cmd
-      
+      system cmd      
       if yes?("Download and install thematic?")
         cmd = "curl -O http://wordpress.org/extend/themes/download/thematic.0.9.5.1.zip && unzip thematic.0.9.5.1.zip -d #{opts['directory']}/wp-content/themes && rm thematic.0.9.5.1.zip"
         system cmd
@@ -22,6 +21,6 @@ class Wordpress < Thor
     else
       puts 'Installation aborted'
     end
-    
   end
+  
 end
