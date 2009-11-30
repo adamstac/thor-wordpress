@@ -30,7 +30,11 @@ Install your new theme with Thor. This assumes that you said yes to using instal
 
 Generate deploy.yaml to using this command. You will be asked for your ssh_user and remote_root details and Thor will create deploy.yaml for you and add it to the current directory.
 
-    wordpress:deploy:generate_config
+    thor wordpress:deploy:generate_config
+    
+Once that's in place you can run this command to deploy your theme to your server.
+
+    thor wordpress:deploy:theme
 
 ## Thor-WordPress tasks
 
