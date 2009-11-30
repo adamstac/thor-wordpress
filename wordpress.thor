@@ -92,8 +92,9 @@ module Wordpress
         ssh_user = ask("What is your ssh username?")
         remote_root = ask("What is your remote root path?")
       end
+      invoke "wordpress:styles:generate"
       say "*** Deploying the site ***"
-      say "rsync -avz --delete . #{ssh_user}:#{remote_root}"
+      system "rsync -avz --delete . #{ssh_user}:#{remote_root}"
     end
   
     desc "generate_config", "Asks for ssh_user and remote_root, and generates the deploy.yaml file"
