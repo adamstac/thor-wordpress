@@ -9,6 +9,8 @@ class Theme < Thor
     puts "*** Installing Child Theme ***"
     cmd = "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['theme']} #{opts['directory']}"
     system cmd
+    puts "*** Installing deploy.thor ***"
+    system "curl -O http://github.com/adamstac/thor-wordpress/raw/master/deploy.thor"
   end
 
   desc "generate", "Clears and Generates the styles"
