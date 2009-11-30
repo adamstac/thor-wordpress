@@ -22,7 +22,7 @@ class Theme < Thor
   method_options :clear => :bolean
   def styles_generate
     if options.clear?
-      invoke :clear_styles
+      invoke :styles_clear
     end
     puts "*** Generating styles ***"
     system "compass"
