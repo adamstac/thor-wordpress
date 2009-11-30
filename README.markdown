@@ -28,7 +28,9 @@ Install your new theme with Thor. This assumes that you said yes to using instal
     
 ## Use rsync to deploy your theme
 
-Update lines 4 and 7 of `deploy.thor` located in your theme directory to use rsync to deploy your theme.
+Generate deploy.yaml to using this command. You will be asked for your ssh_user and remote_root details and Thor will create deploy.yaml for you and add it to the current directory.
+
+    wordpress:deploy:generate_config
 
 ## Thor-WordPress tasks
 
