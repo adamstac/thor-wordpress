@@ -5,7 +5,6 @@ Before you go ANY FURTHER, using these Thor tasks assumes you have the `haml`, `
 ## Install the Thor tasks:
 
     thor install http://github.com/adamstac/thor-wordpress/raw/master/wordpress.thor
-    thor install http://github.com/adamstac/thor-wordpress/raw/master/theme.thor
 
 ## Install WordPress with Thor
 
@@ -25,7 +24,7 @@ Create your new theme directory
 
 Install your new theme with Thor. This assumes that you said yes to using installing Thematic and by default unpacks the Thematic project template located inside the Compass-WordPress gem.
 
-    thor theme:install
+    thor wordpress:theme:install
     
 ## Use rsync to deploy your theme
 
@@ -37,25 +36,32 @@ Update lines 4 and 7 of `deploy.thor` located in your theme directory to use rsy
     ---------
     wordpress:install [--directory=DIRECTORY] [--version=VERSION]
     # Download and unpack WordPress from the interwebs
-
-    theme
-    -----
-    theme:install --theme=<theme> [--directory=DIRECTORY] [--theme=THEME]
+ 
+    wordpress:theme
+    ---------------
+    wordpress:theme:install --theme=<theme> [--directory=DIRECTORY] [--theme=THEME]
     # Unpacks the specified <theme> from the compass-wordpress gem
-
-    theme:generate
+ 
+    wordpress:styles
+    ----------------
+    wordpress:styles:generate
     # Clears and Generates the styles
-
-    theme:watch
-    # Runs compass --watch
-
-    theme:clear
+ 
+    wordpress:styles:clear
     # Clears the styles
-
-    deploy
-    ------
-    deploy:theme
+ 
+    wordpress:compass
+    -----------------
+    wordpress:compass:watch
+    # Runs compass --watch
+ 
+    wordpress:deploy
+    ----------------
+    wordpress:deploy:theme
     # Deploys the theme
+ 
+    wordpress:deploy:generate_config
+    # Asks for ssh_user and remote_root, and generates the deploy.yaml file
     
 ## Contributors
 
