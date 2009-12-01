@@ -42,8 +42,7 @@ module Wordpress
       say "*** Installing Child Theme ***"
       cmd = "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['theme']} #{opts['directory']}"
       system cmd
-      say "*** Installing deploy.thor ***"
-      # system "curl -O http://github.com/adamstac/thor-wordpress/raw/master/deploy.thor"
+      invoke "wordpress:deploy:generate_config"
     end
 
   end
