@@ -27,11 +27,11 @@ module Wp
     # def <theme>
     #   cmd = "curl -O http://yourdomain.com/theme.zip && unzip -q theme.zip -d . && rm theme.zip"
     #   system cmd
-    #   invoke "wp:generate:deploy_yaml"
+    #   invoke "wp:generate:deploy_config"
     # end
     
-    desc "theme --themename=<theme> --directory=<directory>", "Unpacks the specified <theme> from the compass-wordpress gem"
-    method_options :directory => :string, :themename => :string
+    desc "theme --theme=<theme> --directory=<directory>", "Unpacks the specified <theme> from the compass-wordpress gem"
+    method_options :directory => :string, :theme => :string
     def theme
       opts = {'directory' => '.', 'themename' => 'thematic'}
       opts = opts.merge(options)
@@ -39,7 +39,7 @@ module Wp
       say "*** Installing Theme ***"
       cmd = "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['themename']} #{opts['directory']}"
       system cmd
-      invoke "wp:generate:deploy_yaml"
+      invoke "wp:generate:deploy_config"
     end
   
   end
@@ -47,11 +47,12 @@ module Wp
   class Styles < Thor
   
     default_task :generate
+    map "-c" => :clear
+    map "-w" => :watch
 
     desc "generate", "Clears and Generates the styles (Default task)"
     def generate
-      config = load_file("config.rb") rescue nil
-      if config
+      if compass_config?
         invoke :clear
         say "*** Generating styles ***"
         system "compass"
@@ -62,14 +63,28 @@ module Wp
 
     desc "clear", "Clears the styles"
     def clear
-      say "*** Clearing styles ***"
-      system "rm -Rfv css/*"
+      if compass_config?
+        say "*** Clearing styles ***"
+        system "rm -Rfv css/*"
+      else
+        say "\n!! Styles were not cleared. Compass is not setup."
+      end
     end
     
     desc "watch", "Runs compass --watch"
     def watch
-      invoke "wp:styles:generate"
-      system "compass --watch"
+      if compass_config?
+        invoke "wp:styles:generate"
+        system "compass --watch"
+      else
+        say "\n!! Styles were not watched. Compass is not setup."
+      end
+    end
+    
+    private
+    
+    def compass_config?
+      config = load_file("config.rb") rescue nil
     end
 
   end
@@ -77,44 +92,50 @@ module Wp
   class Deploy < Thor
   
     default_task :theme
+    map "-t" => :theme
+    map "-a" => :app
   
     desc "theme", "Deploys the theme (Default task)"
     def theme
-      config = YAML.load_file("deploy.yaml") rescue nil
-      if config
+      if deploy_config?
         ssh_user = config['ssh_user']
         remote_root = config['remote_root']
-        current_theme = config['current_theme']
+        theme = config['theme']
+        invoke "wp:styles:generate"
+        say "*** Deploying the theme ***"
+        system "rsync -avz --delete . #{ssh_user}:#{remote_root}/wp-content/themes/#{theme}/"
       else
-        invoke "wp:generate:deploy_yaml"
+        say "\n!! Deploy not possible. A deploy config file is required."
+        invoke "wp:generate:deploy_config"
       end
-      invoke "wp:styles:generate"
-      say "*** Deploying the theme ***"
-      system "rsync -avz --delete . #{ssh_user}:#{remote_root}/wp-content/themes/#{current_theme}/"
     end
 
     desc "app", "Deploys the app"
     def app
-      filename = "deploy.yaml"
-      config = YAML.load_file(filename) rescue nil
-      if config
+      if deploy_config?
         ssh_user = config['ssh_user']
         remote_root = config['remote_root']
         invoke "wp:styles:generate"
         say "*** Deploying the app ***"
         system "rsync -avz --delete . #{ssh_user}:#{remote_root}/"
       else
-        say "\n!! Deploy not possible. A #{filename} file is required."
-        invoke "wp:generate:deploy_yaml"
+        say "\n!! Deploy not possible. A deploy config file is required."
+        invoke "wp:generate:deploy_config"
       end
+    end
+    
+    private
+    
+    def deploy_config?
+      config = load_file("deploy.yaml") rescue nil
     end
 
   end
   
   class Generate < Thor
 
-    desc "deploy_yaml", "Asks for ssh_user and remote_root, and generates the deploy.yaml file"
-    def deploy_yaml
+    desc "deploy_config", "Generates the deploy.yaml file"
+    def deploy_config
       filename = "deploy.yaml"
       config = {'ssh_user' => 'you@yourdomain.com', 'remote_root' => '~/domains/yourdomain.com/html', 'theme' => 'kubrick'}
       File.open(filename, "w"){ |f| f.puts config.to_yaml }

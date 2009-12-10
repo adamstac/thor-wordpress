@@ -1,8 +1,10 @@
 ## Thor WordPress: A set of Thor tasks to make developing with WordPress easier
 
-Before you go ANY FURTHER, using these Thor tasks assumes you have the `haml`, `compass` and `compass-wordpress` gems installed.
+Before going ANY FURTHER. If you are going to use Thor-Wordpress it's not required, but suggested that you look `haml`, `compass` and `compass-wordpress`.
 
-## Install the Thor tasks:
+The [Compass-Wordpress](http://github.com/pengwynn/compass-wordpress) gem helps with creating and installing Wordpress themes using Sass and Compass.
+
+## Install the Thor-Wordpress tasks:
 
     thor install http://github.com/adamstac/thor-wordpress/raw/master/wordpress.thor
 
@@ -22,19 +24,19 @@ Create your new theme directory
     mkdir mytheme
     cd mytheme/
 
-Install your new theme with Thor. This assumes that you said yes to using installing Thematic and by default unpacks the Thematic project template located inside the Compass-WordPress gem.
+Install your new theme with Thor. This assumes that you said yes to using installing Thematic and by default unpacks the Thematic project template located inside the [Compass-Wordpress](http://github.com/pengwynn/compass-wordpress) gem.
 
-    thor wp:install:theme
+    thor wp:install:theme --theme=<theme>
     
 ## Use rsync to deploy your theme
 
-Generate deploy.yaml to your current directory using this command.
+To use rsync to deploy your Wordpress app or theme, you will need to generate a deploy config to your current directory.
 
-You'll be asked (in your terminal) for your `ssh_user` and `remote_root` details. Thor will then create your `deploy.yaml` file for you, populate it with your responses and then add it to your current directory.
+Thor-Wordpress will create a `deploy.yaml` file for you in your current directory. You will need to update this Yaml file with the name of your theme and server details to enable rsync deployment.
 
-    thor wp:deploy:generate_config
+    thor wp:generate:deploy_config
     
-Once that's in place you can run this command to deploy your theme to your server.
+Once `deploy.yaml` is in place you can run this command to deploy your theme to your server.
 
     thor wp:deploy:theme
 
@@ -42,11 +44,11 @@ Once that's in place you can run this command to deploy your theme to your serve
 
     wp:install
     ----------
-    wp:install:app [--directory=DIRECTORY] [--version=VERSION]
-    # Download and unpack WordPress from the interwebs
+    wp:install:wordpress [--thematic] [--directory=DIRECTORY] [--thematic] [--version=VERSION]
+    # Download and unpack WordPress from the interwebs (Default task)
  
-    wp:install:theme --themename=<theme> --directory=<directory> [--directory=DIRECTORY] [--themename=THEMENAME]
-    # Unpacks the specified <theme> from the compass-wordpress gem (Default task)
+    wp:install:theme --theme=<theme> --directory=<directory> [--directory=DIRECTORY] [--theme=THEME]
+    # Unpacks the specified <theme> from the compass-wordpress gem
  
     wp:styles
     ---------
@@ -67,8 +69,10 @@ Once that's in place you can run this command to deploy your theme to your serve
     wp:deploy:app
     # Deploys the app
  
-    wp:deploy:generate_config
-    # Asks for ssh_user and remote_root, and generates the deploy.yaml file
+    wp:generate
+    -----------
+    wp:generate:deploy_config
+    # Generates the deploy.yaml file
     
 ## Contributors
 
