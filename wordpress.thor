@@ -37,8 +37,7 @@ module Wp
       opts = opts.merge(options)
       system "mkdir -p #{opts['directory']}" unless opts['directory'] == '.'
       say "*** Installing Theme ***"
-      cmd = "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['themename']} #{opts['directory']}"
-      system cmd
+      system "compass -r compass-wordpress -f wordpress --sass-dir=sass --css-dir=css -s compressed -p #{opts['theme']} #{opts['directory']}"
       invoke "wp:generate:deploy_config"
     end
   
@@ -52,7 +51,7 @@ module Wp
 
     desc "generate", "Clears and Generates the styles (Default task)"
     def generate
-      if compass_config?
+      if compass?
         invoke :clear
         say "*** Generating styles ***"
         system "compass"
@@ -63,7 +62,7 @@ module Wp
 
     desc "clear", "Clears the styles"
     def clear
-      if compass_config?
+      if compass?
         say "*** Clearing styles ***"
         system "rm -Rfv css/*"
       else
@@ -73,7 +72,7 @@ module Wp
     
     desc "watch", "Runs compass --watch"
     def watch
-      if compass_config?
+      if compass?
         invoke "wp:styles:generate"
         system "compass --watch"
       else
@@ -83,8 +82,8 @@ module Wp
     
     private
     
-    def compass_config?
-      config = load_file("config.rb") rescue nil
+    def compass?
+      %x[compass -v].length > 1 and File.exist?("config.rb")
     end
 
   end
