@@ -33,7 +33,7 @@ module Wp
     desc "theme --theme=<theme> --directory=<directory>", "Unpacks the specified <theme> from the compass-wordpress gem"
     method_options :directory => :string, :theme => :string
     def theme
-      opts = {'directory' => '.', 'themename' => 'thematic'}
+      opts = {'directory' => '.', 'theme' => 'base'}
       opts = opts.merge(options)
       system "mkdir -p #{opts['directory']}" unless opts['directory'] == '.'
       say "*** Installing Theme ***"
