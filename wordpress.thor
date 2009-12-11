@@ -97,6 +97,7 @@ module Wp
     desc "theme", "Deploys the theme (Default task)"
     def theme
       if deploy_config?
+        config = YAML.load_file("deploy.yaml") rescue nil
         ssh_user = config['ssh_user']
         remote_root = config['remote_root']
         theme = config['theme']
@@ -126,12 +127,14 @@ module Wp
     private
     
     def deploy_config?
-      config = load_file("deploy.yaml") rescue nil
+      File.exist?("deploy.yaml")
     end
 
   end
   
   class Generate < Thor
+    
+    default_task :deploy_config
 
     desc "deploy_config", "Generates the deploy.yaml file"
     def deploy_config
